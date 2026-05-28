@@ -1,0 +1,66 @@
+# Proyecto: GymFlow
+
+GymFlow es una aplicación móvil de productividad fitness creada con React Native, Expo y TypeScript.
+
+## Stack técnico
+
+- React Native
+- Expo
+- TypeScript
+- Expo Router
+- Zustand
+- AsyncStorage
+- FlashList
+- Zod
+- Expo Haptics
+
+## Contexto del proyecto
+
+La app permite al usuario organizar rutinas de gimnasio, registrar entrenamientos y guardar objetivos o ideas fitness.
+
+La navegación principal se organiza en pestañas:
+- Rutinas
+- Entrenos
+- Objetivos
+
+## Estilo de código
+
+- Usar TypeScript en todos los archivos.
+- Usar componentes funcionales.
+- Evitar componentes de clase.
+- Usar nombres claros y descriptivos.
+- Usar interfaces para los modelos principales.
+- Separar componentes, tipos, constantes y estado global.
+- Priorizar código sencillo y fácil de entender.
+
+## Arquitectura
+
+Estructura recomendada:
+
+- app/ para rutas y pantallas con Expo Router.
+- components/ para componentes reutilizables.
+- components/items/ para tarjetas de listas.
+- store/ para Zustand.
+- types/ para interfaces y tipos.
+- constants/ para tema, colores y espaciados.
+- docs/ para documentación técnica.
+
+## Restricciones
+
+- No usar HTML ni CSS web.
+- No usar localStorage.
+- No usar React DOM.
+- No añadir librerías innecesarias.
+- No modificar la arquitectura sin justificarlo.
+- No generar código demasiado complejo si puede resolverse de forma sencilla.
+- Mantener compatibilidad con Expo.
+
+## Buenas prácticas
+
+- Revisar el código existente antes de proponer cambios.
+- Explicar brevemente los cambios importantes.
+- Evitar duplicar lógica.
+- Mantener los formularios validados con Zod.
+- Usar FlashList para listas principales.
+- Usar Zustand para estado global.
+- Usar AsyncStorage para persistencia local.
