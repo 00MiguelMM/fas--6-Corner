@@ -39,6 +39,27 @@ export default function TabsLayout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+        name="rutinas/[id]"
+        options={{
+          href: null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="entrenamientos/[id]"
+        options={{
+          href: null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="objetivos/[id]"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
