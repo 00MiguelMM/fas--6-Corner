@@ -229,3 +229,17 @@ Gracias a TypeScript, la aplicación tiene:
 - autocompletado,
 - detección temprana de errores,
 - y código más mantenible.
+
+### Type Guards
+
+GymFlow utiliza type guards para distinguir distintos tipos de datos en tiempo de ejecución.
+
+Por ejemplo:
+
+```ts
+if ('exercises' in item)
+```
+
+Esto permite comprobar si un elemento es una `Rutina`, ya que solo ese tipo contiene la propiedad `exercises`.
+
+Los type guards ayudan a TypeScript a identificar correctamente el tipo de objeto con el que se está trabajando y permiten escribir código más seguro y organizado.
