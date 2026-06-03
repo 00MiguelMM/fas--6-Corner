@@ -243,3 +243,50 @@ if ('exercises' in item)
 Esto permite comprobar si un elemento es una `Rutina`, ya que solo ese tipo contiene la propiedad `exercises`.
 
 Los type guards ayudan a TypeScript a identificar correctamente el tipo de objeto con el que se está trabajando y permiten escribir código más seguro y organizado.
+
+---
+
+## Gestión de estado
+
+En React Native existen varias formas de gestionar el estado de una aplicación.
+
+### useState
+
+`useState` se utiliza para manejar estado local dentro de un componente concreto.
+
+Es útil para datos sencillos, como:
+- el valor de un input,
+- si un modal está abierto,
+- o un pequeño contador.
+
+Sin embargo, no es la mejor opción para compartir datos entre muchas pantallas.
+
+### Context API
+
+Context API permite compartir datos entre componentes sin tener que pasarlos manualmente mediante props.
+
+Puede ser útil para información global como:
+- tema visual,
+- usuario actual,
+- idioma,
+- configuración general.
+
+El problema es que, si se usa para muchos datos dinámicos, puede provocar renders innecesarios y hacer que el código sea más difícil de mantener.
+
+### Zustand
+
+Zustand es una librería ligera para gestionar estado global en React y React Native.
+
+En GymFlow se utiliza Zustand para guardar y modificar los datos principales de la aplicación:
+- rutinas,
+- entrenamientos,
+- objetivos.
+
+A diferencia de Context API, Zustand no necesita envolver toda la aplicación con providers anidados y permite acceder al estado desde cualquier pantalla de forma sencilla.
+
+También facilita crear acciones como:
+- añadir una rutina,
+- eliminar un entrenamiento,
+- completar un objetivo.
+
+Por estos motivos, Zustand es una buena opción para GymFlow, ya que mantiene el estado global organizado y evita complicar la arquitectura del proyecto.
