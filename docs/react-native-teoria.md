@@ -196,3 +196,36 @@ GymFlow combina Tabs, Stack y modales porque cada sistema resuelve una necesidad
 - Modales: acciones rápidas sin cambiar completamente de contexto.
 
 Esta combinación es habitual en aplicaciones móviles reales y permite mantener una navegación clara y organizada.
+
+---
+
+## Modelado de datos con TypeScript
+
+GymFlow utiliza interfaces de TypeScript para definir la estructura de los datos de la aplicación.
+
+Se ha creado una interfaz base llamada `BaseItem` que contiene las propiedades comunes:
+- id
+- title
+- createdAt
+- updatedAt
+
+A partir de esta interfaz se crean:
+- `Rutina`
+- `Entrenamiento`
+- `Objetivo`
+
+Cada tipo añade propiedades específicas según su función dentro de la aplicación.
+
+También se utiliza un tipo unión:
+
+```ts
+type AnyItem = Rutina | Entrenamiento | Objetivo;
+```
+
+Esto permite crear funciones capaces de trabajar con cualquier tipo de elemento de GymFlow.
+
+Gracias a TypeScript, la aplicación tiene:
+- mejor organización de datos,
+- autocompletado,
+- detección temprana de errores,
+- y código más mantenible.
