@@ -116,3 +116,83 @@ En este archivo se han configurado:
 El cambio entre tema claro y oscuro se realiza utilizando `useColorScheme` de React Native, que detecta automáticamente la configuración del dispositivo del usuario.
 
 Gracias a esto, la aplicación puede adaptar su apariencia según el tema activo del sistema operativo.
+
+---
+
+## Navegación con Expo Router
+
+GymFlow utiliza Expo Router para gestionar la navegación de la aplicación.
+
+Expo Router funciona mediante el sistema de archivos. Cada archivo dentro de la carpeta `app/` representa una pantalla o ruta distinta dentro de la aplicación.
+
+### Navegación por pestañas (Tabs)
+
+La navegación principal de GymFlow utiliza Tabs, es decir, una barra inferior con distintas secciones principales.
+
+Las pestañas implementadas son:
+- Rutinas
+- Entrenamientos
+- Objetivos
+
+Cada pestaña tiene su propia pantalla y un icono asociado mediante `@expo/vector-icons`.
+
+La configuración de las Tabs se encuentra en:
+
+```text
+app/(tabs)/_layout.tsx
+```
+
+Este tipo de navegación es útil porque permite acceder rápidamente a las secciones principales de la aplicación desde cualquier pantalla.
+
+---
+
+### Navegación por pila (Stack)
+
+GymFlow también utiliza navegación tipo Stack mediante `app/_layout.tsx`.
+
+La navegación Stack funciona como una pila de pantallas:
+- una pantalla se coloca encima de otra,
+- el usuario puede avanzar y volver atrás,
+- y cada pantalla mantiene su historial de navegación.
+
+Este sistema se utiliza para:
+- pantallas de detalle,
+- rutas dinámicas,
+- y navegación interna.
+
+Por ejemplo:
+
+```text
+rutinas/[id].tsx
+```
+
+permite abrir el detalle individual de una rutina concreta.
+
+---
+
+### Modales
+
+Además de Tabs y Stack, GymFlow incluye una pantalla modal para crear nuevo contenido:
+
+```text
+app/nuevo-elemento.tsx
+```
+
+Los modales se utilizan para mostrar contenido temporal encima de la pantalla actual sin abandonar completamente el contexto de navegación.
+
+En este proyecto, el modal se utilizará para:
+- crear rutinas,
+- añadir entrenamientos,
+- o registrar objetivos nuevos.
+
+---
+
+### Justificación de la arquitectura
+
+GymFlow combina Tabs, Stack y modales porque cada sistema resuelve una necesidad diferente:
+
+- Tabs: acceso rápido a las secciones principales.
+- Stack: navegación entre pantallas relacionadas.
+- Modales: acciones rápidas sin cambiar completamente de contexto.
+
+Esta combinación es habitual en aplicaciones móviles reales y permite mantener una navegación clara y organizada.
