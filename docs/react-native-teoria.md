@@ -85,3 +85,34 @@ En proyectos profesionales normalmente se utilizan:
 - Compilaciones nativas
 
 Esto permite tener control total sobre las funcionalidades del dispositivo y utilizar cualquier librería nativa necesaria.
+
+---
+
+## Sistemas de diseño
+
+Para el sistema de diseño de GymFlow he comparado dos librerías habituales en proyectos Expo: Gluestack UI y React Native Paper.
+
+Gluestack UI es una librería muy personalizable, con una filosofía similar a Tailwind CSS. Permite crear interfaces con identidad visual propia y trabajar con componentes modernos, pero requiere más configuración inicial.
+
+React Native Paper está basada en Material Design y ofrece componentes ya preparados para aplicaciones móviles. Es más sencilla de configurar, tiene buena integración con React Native y permite avanzar más rápido en una primera versión del proyecto.
+
+Para GymFlow he elegido React Native Paper porque la aplicación necesita una interfaz clara, consistente y funcional. Al tratarse de una primera versión, priorizo una librería estable, sencilla de usar y con componentes listos para pantallas, tarjetas, botones y formularios.
+
+Esta elección permite centrar el desarrollo en la navegación, el estado global y la persistencia local sin dedicar demasiado tiempo a configurar una librería visual más compleja.
+
+---
+
+## Tema visual y modo oscuro
+
+GymFlow utiliza un sistema de tema personalizado definido en `constants/theme.ts`.
+
+En este archivo se han configurado:
+- colores principales,
+- colores de fondo,
+- tipografía,
+- espaciados,
+- y estilos para modo claro y oscuro.
+
+El cambio entre tema claro y oscuro se realiza utilizando `useColorScheme` de React Native, que detecta automáticamente la configuración del dispositivo del usuario.
+
+Gracias a esto, la aplicación puede adaptar su apariencia según el tema activo del sistema operativo.
