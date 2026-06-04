@@ -1,4 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 import type { Entrenamiento, Objetivo, Rutina } from '../types';
 
@@ -18,49 +20,57 @@ interface GymStore {
   toggleObjetivo: (id: string) => void;
 }
 
-export const useGymStore = create<GymStore>((set) => ({
-  rutinas: [],
-  entrenamientos: [],
-  objetivos: [],
+export const useGymStore = create<GymStore>()(
+  persist(
+    (set) => ({
+      rutinas: [],
+      entrenamientos: [],
+      objetivos: [],
 
-  addRutina: (rutina) =>
-    set((state) => ({
-      rutinas: [...state.rutinas, rutina],
-    })),
+      addRutina: (rutina) =>
+        set((state) => ({
+          rutinas: [...state.rutinas, rutina],
+        })),
 
-  deleteRutina: (id) =>
-    set((state) => ({
-      rutinas: state.rutinas.filter((rutina) => rutina.id !== id),
-    })),
+      deleteRutina: (id) =>
+        set((state) => ({
+          rutinas: state.rutinas.filter((rutina) => rutina.id !== id),
+        })),
 
-  addEntrenamiento: (entrenamiento) =>
-    set((state) => ({
-      entrenamientos: [...state.entrenamientos, entrenamiento],
-    })),
+      addEntrenamiento: (entrenamiento) =>
+        set((state) => ({
+          entrenamientos: [...state.entrenamientos, entrenamiento],
+        })),
 
-  deleteEntrenamiento: (id) =>
-    set((state) => ({
-      entrenamientos: state.entrenamientos.filter(
-        (entrenamiento) => entrenamiento.id !== id
-      ),
-    })),
+      deleteEntrenamiento: (id) =>
+        set((state) => ({
+          entrenamientos: state.entrenamientos.filter(
+            (entrenamiento) => entrenamiento.id !== id
+          ),
+        })),
 
-  addObjetivo: (objetivo) =>
-    set((state) => ({
-      objetivos: [...state.objetivos, objetivo],
-    })),
+      addObjetivo: (objetivo) =>
+        set((state) => ({
+          objetivos: [...state.objetivos, objetivo],
+        })),
 
-  deleteObjetivo: (id) =>
-    set((state) => ({
-      objetivos: state.objetivos.filter((objetivo) => objetivo.id !== id),
-    })),
+      deleteObjetivo: (id) =>
+        set((state) => ({
+          objetivos: state.objetivos.filter((objetivo) => objetivo.id !== id),
+        })),
 
-  toggleObjetivo: (id) =>
-    set((state) => ({
-      objetivos: state.objetivos.map((objetivo) =>
-        objetivo.id === id
-          ? { ...objetivo, completed: !objetivo.completed }
-          : objetivo
-      ),
-    })),
-}));
+      toggleObjetivo: (id) =>
+        set((state) => ({
+          objetivos: state.objetivos.map((objetivo) =>
+            objetivo.id === id
+              ? { ...objetivo, completed: !objetivo.completed }
+              : objetivo
+          ),
+        })),
+    }),
+    {
+      name: 'gymflow-storage',
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);

@@ -327,3 +327,18 @@ Si los datos no cumplen las reglas, Zod devuelve errores que se muestran debajo 
 Además, se utiliza `KeyboardAvoidingView` para evitar que el teclado tape los inputs en dispositivos móviles.
 
 Gracias a Zod, la aplicación evita guardar datos incompletos o incorrectos y mejora la experiencia del usuario.
+
+---
+
+## Persistencia con AsyncStorage
+
+GymFlow utiliza AsyncStorage para guardar los datos localmente en el dispositivo.
+
+AsyncStorage permite almacenar información sencilla como rutinas, entrenamientos y objetivos, incluso aunque el usuario cierre la aplicación o recargue la página.
+
+En este proyecto se ha integrado AsyncStorage con Zustand mediante el middleware `persist`.
+
+Esto permite que el store global se guarde automáticamente bajo la clave:
+
+```ts
+gymflow-storage
