@@ -290,3 +290,17 @@ También facilita crear acciones como:
 - completar un objetivo.
 
 Por estos motivos, Zustand es una buena opción para GymFlow, ya que mantiene el estado global organizado y evita complicar la arquitectura del proyecto.
+
+## Rendimiento en listas
+
+Las aplicaciones móviles suelen mostrar grandes cantidades de información mediante listas. Cuando una lista contiene muchos elementos, renderizar todos los componentes a la vez puede provocar problemas de rendimiento y consumo de memoria.
+
+React Native incluye FlatList para optimizar este proceso, pero en listas muy grandes puede aparecer contenido en blanco durante desplazamientos rápidos.
+
+Para solucionar este problema, GymFlow utiliza FlashList, una librería desarrollada por Shopify que mejora el reciclaje de componentes.
+
+El reciclaje de componentes consiste en reutilizar elementos visuales que ya existen en memoria en lugar de crear nuevos continuamente durante el scroll.
+
+Además, FlashList utiliza la propiedad `estimatedItemSize`, que permite estimar el tamaño de los elementos antes de renderizarlos. Cuanto más precisa sea esta estimación, mejor será el rendimiento de la lista.
+
+Gracias a estas optimizaciones, FlashList ofrece una experiencia más fluida y eficiente que FlatList cuando se trabaja con grandes cantidades de datos.

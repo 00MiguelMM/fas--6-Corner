@@ -1,29 +1,35 @@
-// Componentes básicos de React Native
 import { View, Text } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 
-// Pantalla que muestra el historial de entrenamientos registrados
+import EntrenamientoCard from '../../components/items/EntrenamientoCard';
+import { useGymStore } from '../../store/gymStore';
+
 export default function EntrenamientosScreen() {
+  const entrenamientos = useGymStore((state) => state.entrenamientos);
+
   return (
-    // Contenedor con fondo claro y padding lateral
     <View style={{ flex: 1, backgroundColor: '#f5f7fb', padding: 20 }}>
-      {/* Título de la sección */}
       <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 20 }}>
         Entrenamientos
       </Text>
 
-      {/* Tarjeta de ejemplo: sesión de pierna */}
-      <View style={{ backgroundColor: '#fff', padding: 20, borderRadius: 16, marginBottom: 15 }}>
-        {/* Tipo o nombre del entrenamiento */}
-        <Text style={{ fontSize: 18, fontWeight: '600' }}>Pierna</Text>
-        {/* Duración y notas breves */}
-        <Text style={{ color: '#64748b', marginTop: 6 }}>45 minutos · Buenas sensaciones</Text>
-      </View>
-
-      {/* Tarjeta de ejemplo: sesión de pecho y tríceps */}
-      <View style={{ backgroundColor: '#fff', padding: 20, borderRadius: 16 }}>
-        <Text style={{ fontSize: 18, fontWeight: '600' }}>Pecho y tríceps</Text>
-        <Text style={{ color: '#64748b', marginTop: 6 }}>60 minutos · Entrenamiento intenso</Text>
-      </View>
+      <FlashList
+        data={entrenamientos}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <EntrenamientoCard entrenamiento={item} />
+        )}
+        ListEmptyComponent={
+          <View style={{ backgroundColor: '#fff', padding: 20, borderRadius: 16 }}>
+            <Text style={{ fontSize: 18, fontWeight: '600' }}>
+              Aún no tienes entrenamientos
+            </Text>
+            <Text style={{ color: '#64748b', marginTop: 6 }}>
+              Cuando registres un entrenamiento, aparecerá aquí.
+            </Text>
+          </View>
+        }
+      />
     </View>
   );
 }
