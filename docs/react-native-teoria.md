@@ -304,3 +304,26 @@ El reciclaje de componentes consiste en reutilizar elementos visuales que ya exi
 Además, FlashList utiliza la propiedad `estimatedItemSize`, que permite estimar el tamaño de los elementos antes de renderizarlos. Cuanto más precisa sea esta estimación, mejor será el rendimiento de la lista.
 
 Gracias a estas optimizaciones, FlashList ofrece una experiencia más fluida y eficiente que FlatList cuando se trabaja con grandes cantidades de datos.
+
+---
+
+## Validación con Zod
+
+GymFlow utiliza Zod para validar los datos introducidos por el usuario en los formularios.
+
+Zod permite definir schemas de validación, es decir, reglas que deben cumplir los datos antes de guardarse en la aplicación.
+
+En el formulario de `nuevo-elemento.tsx` se validan distintos tipos de contenido:
+- rutinas,
+- entrenamientos,
+- objetivos.
+
+Por ejemplo, una rutina debe tener:
+- un título de al menos 3 caracteres,
+- y al menos un ejercicio.
+
+Si los datos no cumplen las reglas, Zod devuelve errores que se muestran debajo de cada campo del formulario.
+
+Además, se utiliza `KeyboardAvoidingView` para evitar que el teclado tape los inputs en dispositivos móviles.
+
+Gracias a Zod, la aplicación evita guardar datos incompletos o incorrectos y mejora la experiencia del usuario.
