@@ -330,6 +330,8 @@ Gracias a Zod, la aplicación evita guardar datos incompletos o incorrectos y me
 
 ---
 
+---
+
 ## Persistencia con AsyncStorage
 
 GymFlow utiliza AsyncStorage para guardar los datos localmente en el dispositivo.
@@ -342,3 +344,24 @@ Esto permite que el store global se guarde automáticamente bajo la clave:
 
 ```ts
 gymflow-storage
+```
+
+### Rehidratación del store
+
+Cuando la aplicación vuelve a abrirse, Zustand recupera automáticamente los datos almacenados. Este proceso se denomina rehidratación del store.
+
+La rehidratación consiste en reconstruir el estado global de la aplicación a partir de la información guardada previamente en AsyncStorage.
+
+Durante este proceso, en una aplicación real se podría mostrar un indicador de carga para evitar que el usuario vea pantallas vacías mientras los datos terminan de recuperarse.
+
+### Limitaciones de AsyncStorage
+
+Entre las principales limitaciones de AsyncStorage se encuentran:
+
+- No cifra los datos almacenados.
+- Tiene un límite de tamaño.
+- Los datos solo están disponibles en el dispositivo donde fueron guardados.
+
+### Ventajas para GymFlow
+
+A pesar de estas limitaciones, AsyncStorage es una solución adecuada para GymFlow porque permite mantener la información del usuario entre sesiones sin necesidad de un servidor o una base de datos externa.
