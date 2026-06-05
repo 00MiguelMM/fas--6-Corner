@@ -1,7 +1,9 @@
 // Navegación en pila de expo-router (pantallas apiladas)
 import { Stack } from 'expo-router';
+
 // Proveedor de tema y componentes de Material Design (React Native Paper)
 import { PaperProvider } from 'react-native-paper';
+
 // Hook para detectar si el dispositivo usa tema claro u oscuro
 import { useColorScheme } from 'react-native';
 
@@ -20,17 +22,25 @@ export default function RootLayout() {
   return (
     // Provee el contexto de Paper a todos los componentes hijos
     <PaperProvider>
-      {/* Stack de navegación sin cabecera visible por defecto */}
       <Stack
         screenOptions={{
-          // Oculta la barra de navegación superior en todas las pantallas
-          headerShown: false,
+          // Mostramos cabeceras para permitir navegación atrás
+          headerShown: true,
+
+          // Aplica el color de fondo del tema activo
           contentStyle: {
-            // Aplica el color de fondo del tema activo al contenido
             backgroundColor: currentTheme.colors.background,
           },
         }}
-      />
+      >
+        {/* Las pestañas siguen ocultando su propia cabecera */}
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack>
     </PaperProvider>
   );
 }

@@ -61,8 +61,16 @@ export default function EntrenamientoDetalleScreen() {
   return (
     <>
       <Stack.Screen
-        options={{ headerShown: true, title: 'Detalle de entrenamiento' }}
-      />
+  options={{
+    headerShown: true,
+    title: 'Detalle de entrenamiento',
+    headerLeft: () => (
+      <Pressable onPress={() => router.replace('/entrenamientos')}>
+        <Text style={{ fontSize: 24, marginLeft: 10 }}>←</Text>
+      </Pressable>
+    ),
+  }}
+/>
 
       <View style={{ flex: 1, padding: 20, backgroundColor: '#f5f7fb' }}>
         <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 12 }}>

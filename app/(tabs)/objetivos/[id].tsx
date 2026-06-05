@@ -58,7 +58,17 @@ export default function ObjetivoDetalleScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ headerShown: true, title: 'Detalle de objetivo' }} />
+      <Stack.Screen
+  options={{
+    headerShown: true,
+    title: 'Detalle de objetivo',
+    headerLeft: () => (
+      <Pressable onPress={() => router.replace('/objetivos')}>
+        <Text style={{ fontSize: 24, marginLeft: 10 }}>←</Text>
+      </Pressable>
+    ),
+  }}
+/>
 
       <View style={{ flex: 1, padding: 20, backgroundColor: '#f5f7fb' }}>
         <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 12 }}>
