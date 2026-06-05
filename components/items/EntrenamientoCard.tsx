@@ -1,15 +1,18 @@
-import { View, Text } from 'react-native';
+import { Pressable, Text } from 'react-native';
+import { useRouter } from 'expo-router';
+
 import { Entrenamiento } from '../../types';
 
 interface Props {
   entrenamiento: Entrenamiento;
 }
 
-export default function EntrenamientoCard({
-  entrenamiento,
-}: Props) {
+export default function EntrenamientoCard({ entrenamiento }: Props) {
+  const router = useRouter();
+
   return (
-    <View
+    <Pressable
+      onPress={() => router.push(`/entrenamientos/${entrenamiento.id}`)}
       style={{
         backgroundColor: '#fff',
         padding: 20,
@@ -24,6 +27,6 @@ export default function EntrenamientoCard({
       <Text style={{ color: '#64748b', marginTop: 6 }}>
         {entrenamiento.duration} minutos
       </Text>
-    </View>
+    </Pressable>
   );
 }
