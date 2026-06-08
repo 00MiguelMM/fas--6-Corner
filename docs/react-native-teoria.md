@@ -365,3 +365,201 @@ Entre las principales limitaciones de AsyncStorage se encuentran:
 ### Ventajas para GymFlow
 
 A pesar de estas limitaciones, AsyncStorage es una solución adecuada para GymFlow porque permite mantener la información del usuario entre sesiones sin necesidad de un servidor o una base de datos externa.
+
+# Pulido UX y funcionalidades avanzadas
+
+## Navegación entre pantallas
+
+Se ha implementado navegación mediante Expo Router. Cada tarjeta de rutina, entrenamiento u objetivo es pulsable y permite acceder a una pantalla de detalle utilizando rutas dinámicas (`[id].tsx`).
+
+Ejemplos:
+
+- `/rutinas/[id]`
+- `/entrenamientos/[id]`
+- `/objetivos/[id]`
+
+Además, cada pantalla de detalle incluye una flecha de retorno para volver al listado correspondiente.
+
+---
+
+## Confirmación antes de eliminar
+
+Para evitar eliminaciones accidentales se ha implementado una confirmación previa.
+
+En dispositivos móviles se utiliza:
+
+```ts
+Alert.alert(...)
+```
+
+En la versión web se utiliza:
+
+```ts
+window.confirm(...)
+```
+
+De esta forma el usuario debe confirmar la acción antes de eliminar definitivamente un elemento.
+
+---
+
+## Feedback táctil con Expo Haptics
+
+Se ha integrado la librería:
+
+```bash
+npx expo install expo-haptics
+```
+
+Cada vez que el usuario elimina o archiva un elemento se ejecuta:
+
+```ts
+Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+```
+
+Esto proporciona una respuesta táctil que mejora la sensación de calidad de la aplicación.
+
+---
+
+## Persistencia local con AsyncStorage
+
+La aplicación utiliza Zustand junto con AsyncStorage para almacenar los datos localmente.
+
+Instalación:
+
+```bash
+npx expo install @react-native-async-storage/async-storage
+```
+
+Configuración:
+
+```ts
+persist(
+  (set) => ({ ... }),
+  {
+    name: 'gymflow-storage',
+    storage: createJSONStorage(() => AsyncStorage),
+  }
+)
+```
+
+Gracias a esta configuración, las rutinas, entrenamientos y objetivos permanecen almacenados incluso después de cerrar completamente la aplicación.
+
+### Rehidratación del store
+
+Al iniciar la aplicación, Zustand recupera automáticamente los datos guardados en AsyncStorage y reconstruye el estado global.
+
+Este proceso se denomina rehidratación.
+
+Durante este tiempo podría mostrarse un indicador de carga para informar al usuario de que los datos se están restaurando antes de mostrar la interfaz principal.
+
+---
+
+## Búsqueda en tiempo real
+
+Se ha añadido un buscador en:
+
+- Rutinas
+- Entrenamientos
+- Objetivos
+
+La búsqueda filtra automáticamente los elementos mientras el usuario escribe.
+
+Ejemplo:
+
+```ts
+const filteredRutinas = rutinas.filter(
+  (rutina) =>
+    !rutina.archived &&
+    rutina.title.toLowerCase().includes(search.toLowerCase())
+);
+```
+
+Esto permite localizar información de forma rápida incluso cuando existen muchos elementos.
+
+---
+
+## Animaciones con Reanimated
+
+Se ha integrado:
+
+```bash
+npx expo install react-native-reanimated
+```
+
+Los elementos de las listas utilizan animaciones de entrada mediante:
+
+```ts
+FadeInDown
+```
+
+Ejemplo:
+
+```tsx
+<Animated.View entering={FadeInDown.delay(index * 80)}>
+```
+
+Estas animaciones hacen que la interfaz resulte más fluida y agradable para el usuario.
+
+---
+
+## Sistema de archivado
+
+Como mejora adicional se ha implementado un sistema de archivado.
+
+Cada elemento puede archivarse desde su pantalla de detalle.
+
+Al archivarlo:
+
+- Desaparece de su lista principal.
+- Se mantiene almacenado.
+- Aparece en la pestaña "Archivados".
+
+Esto permite conservar información sin necesidad de eliminarla definitivamente.
+
+---
+
+## Estados vacíos
+
+Todas las pestañas muestran mensajes específicos cuando no existen elementos:
+
+- No hay rutinas.
+- No hay entrenamientos.
+- No hay objetivos.
+- No hay archivados.
+
+Esto mejora la experiencia de usuario y evita pantallas vacías sin información.
+
+---
+
+## Rendimiento
+
+La aplicación utiliza FlashList para mostrar grandes cantidades de información de forma eficiente.
+
+```tsx
+import { FlashList } from '@shopify/flash-list';
+```
+
+FlashList mejora el rendimiento respecto a FlatList cuando el número de elementos aumenta, reduciendo el consumo de memoria y evitando caídas de FPS.
+
+---
+
+## Resultado final
+
+La aplicación incluye:
+
+- Expo Router
+- React Native Paper
+- Zustand
+- AsyncStorage
+- FlashList
+- Expo Haptics
+- React Native Reanimated
+- Pantallas de detalle
+- Navegación dinámica
+- Persistencia local
+- Búsqueda en tiempo real
+- Sistema de archivado
+- Animaciones de entrada
+- Estados vacíos personalizados
+
+Todo ello proporciona una experiencia de usuario más completa, fluida y cercana a una aplicación móvil real.

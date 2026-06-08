@@ -34,3 +34,20 @@ export interface Objetivo extends BaseItem {
 
 // Unión de tipos: un ítem puede ser cualquiera de las tres variantes anteriores
 export type AnyItem = Rutina | Entrenamiento | Objetivo;
+
+export interface Rutina extends BaseItem {
+  exercises: string[];
+  archived?: boolean;
+}
+
+export interface Entrenamiento extends BaseItem {
+  duration: number;
+  notes: string;
+  archived?: boolean;
+}
+
+export interface Objetivo extends BaseItem {
+  target: string;
+  completed: boolean;
+  archived?: boolean;
+}

@@ -1,4 +1,4 @@
-import { Alert, Platform, Pressable, Text, View } from 'react-native';
+import { Platform, Pressable, Text, View } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
@@ -11,38 +11,27 @@ export default function ObjetivoDetalleScreen() {
   const objetivo = useGymStore((state) =>
     state.objetivos.find((item) => item.id === id)
   );
+
   const deleteObjetivo = useGymStore((state) => state.deleteObjetivo);
+  const archiveObjetivo = useGymStore((state) => state.archiveObjetivo);
+
+  const handleArchive = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    archiveObjetivo(id);
+    router.replace('/archivados');
+  };
 
   const handleDelete = async () => {
-    if (Platform.OS === 'web') {
-      const confirmDelete = window.confirm(
-        '¿Seguro que quieres eliminar este objetivo?'
-      );
+    const confirmDelete =
+      Platform.OS === 'web'
+        ? window.confirm('¿Seguro que quieres eliminar este objetivo?')
+        : true;
 
-      if (!confirmDelete) return;
+    if (Platform.OS === 'web' && !confirmDelete) return;
 
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      deleteObjetivo(id);
-      router.replace('/objetivos');
-      return;
-    }
-
-    Alert.alert(
-      'Eliminar objetivo',
-      '¿Seguro que quieres eliminar este objetivo?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: async () => {
-            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            deleteObjetivo(id);
-            router.replace('/objetivos');
-          },
-        },
-      ]
-    );
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    deleteObjetivo(id);
+    router.replace('/objetivos');
   };
 
   if (!objetivo) {
@@ -59,16 +48,16 @@ export default function ObjetivoDetalleScreen() {
   return (
     <>
       <Stack.Screen
-  options={{
-    headerShown: true,
-    title: 'Detalle de objetivo',
-    headerLeft: () => (
-      <Pressable onPress={() => router.replace('/objetivos')}>
-        <Text style={{ fontSize: 24, marginLeft: 10 }}>←</Text>
-      </Pressable>
-    ),
-  }}
-/>
+        options={{
+          headerShown: true,
+          title: 'Detalle de objetivo',
+          headerLeft: () => (
+            <Pressable onPress={() => router.replace('/objetivos')}>
+              <Text style={{ fontSize: 24, marginLeft: 10 }}>←</Text>
+            </Pressable>
+          ),
+        }}
+      />
 
       <View style={{ flex: 1, padding: 20, backgroundColor: '#f5f7fb' }}>
         <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 12 }}>
@@ -102,13 +91,28 @@ export default function ObjetivoDetalleScreen() {
         </View>
 
         <Pressable
+          onPress={handleArchive}
+          style={{
+            backgroundColor: '#64748b',
+            padding: 16,
+            borderRadius: 14,
+            alignItems: 'center',
+            marginTop: 20,
+          }}
+        >
+          <Text style={{ color: '#fff', fontWeight: '700' }}>
+            Archivar objetivo
+          </Text>
+        </Pressable>
+
+        <Pressable
           onPress={handleDelete}
           style={{
             backgroundColor: '#dc2626',
             padding: 16,
             borderRadius: 14,
             alignItems: 'center',
-            marginTop: 20,
+            marginTop: 12,
           }}
         >
           <Text style={{ color: '#fff', fontWeight: '700' }}>

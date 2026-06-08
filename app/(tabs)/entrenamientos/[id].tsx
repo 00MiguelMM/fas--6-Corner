@@ -1,4 +1,4 @@
-import { Alert, Platform, Pressable, Text, View } from 'react-native';
+import { Platform, Pressable, Text, View } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
@@ -11,40 +11,31 @@ export default function EntrenamientoDetalleScreen() {
   const entrenamiento = useGymStore((state) =>
     state.entrenamientos.find((item) => item.id === id)
   );
+
   const deleteEntrenamiento = useGymStore(
     (state) => state.deleteEntrenamiento
   );
+  const archiveEntrenamiento = useGymStore(
+    (state) => state.archiveEntrenamiento
+  );
+
+  const handleArchive = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    archiveEntrenamiento(id);
+    router.replace('/archivados');
+  };
 
   const handleDelete = async () => {
-    if (Platform.OS === 'web') {
-      const confirmDelete = window.confirm(
-        '¿Seguro que quieres eliminar este entrenamiento?'
-      );
+    const confirmDelete =
+      Platform.OS === 'web'
+        ? window.confirm('¿Seguro que quieres eliminar este entrenamiento?')
+        : true;
 
-      if (!confirmDelete) return;
+    if (Platform.OS === 'web' && !confirmDelete) return;
 
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      deleteEntrenamiento(id);
-      router.replace('/entrenamientos');
-      return;
-    }
-
-    Alert.alert(
-      'Eliminar entrenamiento',
-      '¿Seguro que quieres eliminar este entrenamiento?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: async () => {
-            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            deleteEntrenamiento(id);
-            router.replace('/entrenamientos');
-          },
-        },
-      ]
-    );
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    deleteEntrenamiento(id);
+    router.replace('/entrenamientos');
   };
 
   if (!entrenamiento) {
@@ -61,16 +52,16 @@ export default function EntrenamientoDetalleScreen() {
   return (
     <>
       <Stack.Screen
-  options={{
-    headerShown: true,
-    title: 'Detalle de entrenamiento',
-    headerLeft: () => (
-      <Pressable onPress={() => router.replace('/entrenamientos')}>
-        <Text style={{ fontSize: 24, marginLeft: 10 }}>←</Text>
-      </Pressable>
-    ),
-  }}
-/>
+        options={{
+          headerShown: true,
+          title: 'Detalle de entrenamiento',
+          headerLeft: () => (
+            <Pressable onPress={() => router.replace('/entrenamientos')}>
+              <Text style={{ fontSize: 24, marginLeft: 10 }}>←</Text>
+            </Pressable>
+          ),
+        }}
+      />
 
       <View style={{ flex: 1, padding: 20, backgroundColor: '#f5f7fb' }}>
         <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 12 }}>
@@ -99,13 +90,28 @@ export default function EntrenamientoDetalleScreen() {
         </View>
 
         <Pressable
+          onPress={handleArchive}
+          style={{
+            backgroundColor: '#64748b',
+            padding: 16,
+            borderRadius: 14,
+            alignItems: 'center',
+            marginTop: 20,
+          }}
+        >
+          <Text style={{ color: '#fff', fontWeight: '700' }}>
+            Archivar entrenamiento
+          </Text>
+        </Pressable>
+
+        <Pressable
           onPress={handleDelete}
           style={{
             backgroundColor: '#dc2626',
             padding: 16,
             borderRadius: 14,
             alignItems: 'center',
-            marginTop: 20,
+            marginTop: 12,
           }}
         >
           <Text style={{ color: '#fff', fontWeight: '700' }}>

@@ -1,11 +1,20 @@
-import { View, Text } from 'react-native';
+import { useState } from 'react';
+import { View, Text, TextInput } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import RutinaCard from '../../components/items/RutinaCard';
 import { useGymStore } from '../../store/gymStore';
 
 export default function RutinasScreen() {
   const rutinas = useGymStore((state) => state.rutinas);
+  const [search, setSearch] = useState('');
+
+  const filteredRutinas = rutinas.filter(
+  (rutina) =>
+    !rutina.archived &&
+    rutina.title.toLowerCase().includes(search.toLowerCase())
+);
 
   return (
     <View style={{ flex: 1, backgroundColor: '#f5f7fb', padding: 20 }}>
@@ -13,17 +22,33 @@ export default function RutinasScreen() {
         Mis rutinas
       </Text>
 
+      <TextInput
+        value={search}
+        onChangeText={setSearch}
+        placeholder="Buscar rutina..."
+        style={{
+          backgroundColor: '#ffffff',
+          padding: 14,
+          borderRadius: 12,
+          marginBottom: 16,
+        }}
+      />
+
       <FlashList
-        data={rutinas}
+        data={filteredRutinas}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <RutinaCard rutina={item} />}
+        renderItem={({ item, index }) => (
+          <Animated.View entering={FadeInDown.delay(index * 80)}>
+            <RutinaCard rutina={item} />
+          </Animated.View>
+        )}
         ListEmptyComponent={
           <View style={{ backgroundColor: '#fff', padding: 20, borderRadius: 16 }}>
             <Text style={{ fontSize: 18, fontWeight: '600' }}>
-              Aún no tienes rutinas
+              No hay rutinas para mostrar
             </Text>
             <Text style={{ color: '#64748b', marginTop: 6 }}>
-              Cuando crees una rutina, aparecerá aquí.
+              Crea una rutina o prueba otra búsqueda.
             </Text>
           </View>
         }
