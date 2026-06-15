@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -8,13 +8,19 @@ import { useGymStore } from '../../store/gymStore';
 
 export default function RutinasScreen() {
   const rutinas = useGymStore((state) => state.rutinas);
+  const fetchNotes = useGymStore((state) => state.fetchNotes);
+
   const [search, setSearch] = useState('');
 
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
   const filteredRutinas = rutinas.filter(
-  (rutina) =>
-    !rutina.archived &&
-    rutina.title.toLowerCase().includes(search.toLowerCase())
-);
+    (rutina) =>
+      !rutina.archived &&
+      rutina.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <View style={{ flex: 1, backgroundColor: '#f5f7fb', padding: 20 }}>

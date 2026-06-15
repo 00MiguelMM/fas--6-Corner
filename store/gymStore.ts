@@ -1,7 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { createNote, getNotes } from '../lib/api';
 import type { Entrenamiento, Objetivo, Rutina } from '../types';
 
 interface GymStore {
@@ -9,101 +8,198 @@ interface GymStore {
   entrenamientos: Entrenamiento[];
   objetivos: Objetivo[];
 
-  addRutina: (rutina: Rutina) => void;
+  isLoading: boolean;
+  error: string | null;
+
+  fetchNotes: () => Promise<void>;
+
+  addRutina: (rutina: Rutina) => Promise<void>;
   deleteRutina: (id: string) => void;
   archiveRutina: (id: string) => void;
 
-  addEntrenamiento: (entrenamiento: Entrenamiento) => void;
+  addEntrenamiento: (entrenamiento: Entrenamiento) => Promise<void>;
   deleteEntrenamiento: (id: string) => void;
   archiveEntrenamiento: (id: string) => void;
 
-  addObjetivo: (objetivo: Objetivo) => void;
+  addObjetivo: (objetivo: Objetivo) => Promise<void>;
   deleteObjetivo: (id: string) => void;
   archiveObjetivo: (id: string) => void;
 
   toggleObjetivo: (id: string) => void;
 }
 
-export const useGymStore = create<GymStore>()(
-  persist(
-    (set) => ({
-      rutinas: [],
-      entrenamientos: [],
-      objetivos: [],
+export const useGymStore = create<GymStore>()((set) => ({
+  rutinas: [],
+  entrenamientos: [],
+  objetivos: [],
 
-      addRutina: (rutina) =>
-        set((state) => ({
-          rutinas: [...state.rutinas, rutina],
-        })),
+  isLoading: false,
+  error: null,
 
-      deleteRutina: (id) =>
-        set((state) => ({
-          rutinas: state.rutinas.filter((rutina) => rutina.id !== id),
-        })),
+  fetchNotes: async () => {
+    try {
+      set({ isLoading: true, error: null });
 
-      archiveRutina: (id) =>
-        set((state) => ({
-          rutinas: state.rutinas.map((rutina) =>
-            rutina.id === id
-              ? { ...rutina, archived: true }
-              : rutina
-          ),
-        })),
+      const notes = await getNotes();
 
-      addEntrenamiento: (entrenamiento) =>
-        set((state) => ({
-          entrenamientos: [...state.entrenamientos, entrenamiento],
-        })),
+      set({
+        rutinas: notes
+          .filter((note) => note.type === 'note')
+          .map((note) => ({
+            id: note.id,
+            title: note.title,
+            createdAt: new Date(note.created_at),
+            updatedAt: new Date(note.updated_at),
+            exercises: note.content ? [note.content] : [],
+            archived: false,
+          })) as Rutina[],
 
-      deleteEntrenamiento: (id) =>
-        set((state) => ({
-          entrenamientos: state.entrenamientos.filter(
-            (entrenamiento) => entrenamiento.id !== id
-          ),
-        })),
+        entrenamientos: notes
+          .filter((note) => note.type === 'checklist')
+          .map((note) => ({
+            id: note.id,
+            title: note.title,
+            createdAt: new Date(note.created_at),
+            updatedAt: new Date(note.updated_at),
+            duration: 0,
+            notes: note.content ?? '',
+            archived: false,
+          })) as Entrenamiento[],
 
-      archiveEntrenamiento: (id) =>
-        set((state) => ({
-          entrenamientos: state.entrenamientos.map((entrenamiento) =>
-            entrenamiento.id === id
-              ? { ...entrenamiento, archived: true }
-              : entrenamiento
-          ),
-        })),
+        objetivos: notes
+          .filter((note) => note.type === 'idea')
+          .map((note) => ({
+            id: note.id,
+            title: note.title,
+            createdAt: new Date(note.created_at),
+            updatedAt: new Date(note.updated_at),
+            target: note.content ?? '',
+            completed: false,
+            archived: false,
+          })) as Objetivo[],
 
-      addObjetivo: (objetivo) =>
-        set((state) => ({
-          objetivos: [...state.objetivos, objetivo],
-        })),
-
-      deleteObjetivo: (id) =>
-        set((state) => ({
-          objetivos: state.objetivos.filter(
-            (objetivo) => objetivo.id !== id
-          ),
-        })),
-
-      archiveObjetivo: (id) =>
-        set((state) => ({
-          objetivos: state.objetivos.map((objetivo) =>
-            objetivo.id === id
-              ? { ...objetivo, archived: true }
-              : objetivo
-          ),
-        })),
-
-      toggleObjetivo: (id) =>
-        set((state) => ({
-          objetivos: state.objetivos.map((objetivo) =>
-            objetivo.id === id
-              ? { ...objetivo, completed: !objetivo.completed }
-              : objetivo
-          ),
-        })),
-    }),
-    {
-      name: 'gymflow-storage',
-      storage: createJSONStorage(() => AsyncStorage),
+        isLoading: false,
+      });
+    } catch {
+      set({
+        error: 'Error al cargar los datos',
+        isLoading: false,
+      });
     }
-  )
-);
+  },
+
+  addRutina: async (rutina) => {
+    try {
+      const note = await createNote({
+        title: rutina.title,
+        type: 'note',
+        content: rutina.exercises.join(', '),
+      });
+
+      set((state) => ({
+        rutinas: [
+          ...state.rutinas,
+          {
+            ...rutina,
+            id: note.id,
+          },
+        ],
+      }));
+    } catch {
+      set({ error: 'Error al crear la rutina' });
+    }
+  },
+
+  deleteRutina: (id) =>
+    set((state) => ({
+      rutinas: state.rutinas.filter((rutina) => rutina.id !== id),
+    })),
+
+  archiveRutina: (id) =>
+    set((state) => ({
+      rutinas: state.rutinas.map((rutina) =>
+        rutina.id === id ? { ...rutina, archived: true } : rutina
+      ),
+    })),
+
+  addEntrenamiento: async (entrenamiento) => {
+    try {
+      const note = await createNote({
+        title: entrenamiento.title,
+        type: 'checklist',
+        content: entrenamiento.notes,
+      });
+
+      set((state) => ({
+        entrenamientos: [
+          ...state.entrenamientos,
+          {
+            ...entrenamiento,
+            id: note.id,
+          },
+        ],
+      }));
+    } catch {
+      set({ error: 'Error al crear el entrenamiento' });
+    }
+  },
+
+  deleteEntrenamiento: (id) =>
+    set((state) => ({
+      entrenamientos: state.entrenamientos.filter(
+        (entrenamiento) => entrenamiento.id !== id
+      ),
+    })),
+
+  archiveEntrenamiento: (id) =>
+    set((state) => ({
+      entrenamientos: state.entrenamientos.map((entrenamiento) =>
+        entrenamiento.id === id
+          ? { ...entrenamiento, archived: true }
+          : entrenamiento
+      ),
+    })),
+
+  addObjetivo: async (objetivo) => {
+    try {
+      const note = await createNote({
+        title: objetivo.title,
+        type: 'idea',
+        content: objetivo.target,
+      });
+
+      set((state) => ({
+        objetivos: [
+          ...state.objetivos,
+          {
+            ...objetivo,
+            id: note.id,
+          },
+        ],
+      }));
+    } catch {
+      set({ error: 'Error al crear el objetivo' });
+    }
+  },
+
+  deleteObjetivo: (id) =>
+    set((state) => ({
+      objetivos: state.objetivos.filter((objetivo) => objetivo.id !== id),
+    })),
+
+  archiveObjetivo: (id) =>
+    set((state) => ({
+      objetivos: state.objetivos.map((objetivo) =>
+        objetivo.id === id ? { ...objetivo, archived: true } : objetivo
+      ),
+    })),
+
+  toggleObjetivo: (id) =>
+    set((state) => ({
+      objetivos: state.objetivos.map((objetivo) =>
+        objetivo.id === id
+          ? { ...objetivo, completed: !objetivo.completed }
+          : objetivo
+      ),
+    })),
+}));
